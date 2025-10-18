@@ -17,19 +17,41 @@
       margin: 0;
     }
 
-    input {
+    #display {
       font-size: 2rem;
+      letter-spacing: 0.5rem;
+      margin-bottom: 1rem;
+      background: #222;
       padding: 0.5rem 1rem;
+      border-radius: 5px;
+      min-width: 8rem;
       text-align: center;
-      width: 8rem;
-      letter-spacing: 0.3rem;
     }
 
-    button {
+    .numpad {
+      display: grid;
+      grid-template-columns: repeat(3, 4rem);
+      gap: 0.5rem;
+    }
+
+    .btn {
       font-size: 1.5rem;
-      padding: 0.5rem 1.5rem;
-      margin-top: 1rem;
+      padding: 1rem;
+      background: #333;
+      border: none;
+      border-radius: 8px;
+      color: white;
       cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: #555;
+    }
+
+    #submitBtn, #clearBtn {
+      grid-column: span 3;
+      background: #0a84ff;
     }
 
     #content {
@@ -52,27 +74,71 @@
   </style>
 </head>
 <body>
-  <h1>Enter 4-Digit Code</h1>
-  <input type="password" id="codeInput" maxlength="4" />
-  <button id="submitBtn">Submit</button>
+  <h1>Enter Code</h1>
+
+  <div id="display"></div>
+
+  <div class="numpad">
+    <button class="btn">1</button>
+    <button class="btn">2</button>
+    <button class="btn">3</button>
+    <button class="btn">4</button>
+    <button class="btn">5</button>
+    <button class="btn">6</button>
+    <button class="btn">7</button>
+    <button class="btn">8</button>
+    <button class="btn">9</button>
+    <button class="btn">0</button>
+    <button id="clearBtn" class="btn">Clear</button>
+    <button id="submitBtn" class="btn">Submit</button>
+  </div>
 
   <div id="content">
-    <!-- You can swap this for a video if you want -->
-    <img src="secret.JPEG" alt="Secret Image" />
+    <img src="secret.jpg" alt="Secret Image" />
+    <!-- or you can use: <video src="secret.mp4" autoplay loop muted></video> -->
   </div>
 
   <script>
-    const correctCode = "1234"; // change this to your secret code
-    const input = document.getElementById("codeInput");
-    const btn = document.getElementById("submitBtn");
-    const content = document.getElementById("content");
+    const correctDigits = ['1', '2', '3', '4']; // correct numbers (any order)
+    let enteredDigits = [];
 
-    btn.addEventListener("click", () => {
-      if (input.value === correctCode) {
-        content.style.display = "flex";
-        content.requestFullscreen(); // Go full screen
+    const display = document.getElementById('display');
+    const buttons = document.querySelectorAll('.btn');
+    const content = document.getElementById('content');
+    const submitBtn = document.getElementById('submitBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    // handle number clicks
+    buttons.forEach(btn => {
+      if (btn.classList.contains('btn') && !btn.id) {
+        btn.addEventListener('click', () => {
+          if (enteredDigits.length < correctDigits.length) {
+            enteredDigits.push(btn.textContent);
+            display.textContent = enteredDigits.join('');
+          }
+        });
+      }
+    });
+
+    // clear button
+    clearBtn.addEventListener('click', () => {
+      enteredDigits = [];
+      display.textContent = '';
+    });
+
+    // submit button
+    submitBtn.addEventListener('click', () => {
+      const isCorrect =
+        enteredDigits.length === correctDigits.length &&
+        correctDigits.every(d => enteredDigits.includes(d));
+
+      if (isCorrect) {
+        content.style.display = 'flex';
+        content.requestFullscreen();
       } else {
-        alert("Incorrect code!");
+        alert('Incorrect code!');
+        enteredDigits = [];
+        display.textContent = '';
       }
     });
   </script>
