@@ -127,6 +127,8 @@
       display.textContent = '';
     });
 
+let firstClick = false; // tracks if the button was pressed once
+
 submitBtn.addEventListener('click', async () => {
   const isCorrect =
     enteredDigits.length === correctDigits.length &&
@@ -134,24 +136,34 @@ submitBtn.addEventListener('click', async () => {
 
   if (isCorrect) {
     const video = document.getElementById('secretVideo');
-    content.style.display = 'flex';
 
+    // first click → show content only
+    if (!firstClick) {
+      content.style.display = 'flex';
+      firstClick = true;
+      return;
+    }
+
+    // second click → go fullscreen + play video with sound
     try {
       if (content.requestFullscreen) {
         await content.requestFullscreen();
       } else if (content.webkitRequestFullscreen) {
-        content.webkitRequestFullscreen();
+        content.webkitRequestFullscreen(); // Safari support
       }
 
       await video.play();
+      firstClick = false; // reset for next time
     } catch (err) {
-      console.warn("Autoplay or fullscreen failed:", err);
-      alert("Tap the screen to start the video");
+      console.warn('Autoplay or fullscreen failed:', err);
+      firstClick = false;
     }
+
   } else {
     alert('Incorrect code!');
     enteredDigits = [];
     display.textContent = '';
+    firstClick = false;
   }
 });
   </script>
