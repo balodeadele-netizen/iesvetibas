@@ -127,45 +127,22 @@
       display.textContent = '';
     });
 
-let firstClick = false; // track if it's been pressed once
+    // submit button
+    submitBtn.addEventListener('click', () => {
+      const isCorrect =
+        enteredDigits.length === correctDigits.length &&
+        correctDigits.every(d => enteredDigits.includes(d));
 
-submitBtn.addEventListener('click', async () => {
-  const isCorrect =
-    enteredDigits.length === correctDigits.length &&
-    correctDigits.every(d => enteredDigits.includes(d));
-
-  if (isCorrect) {
-    const video = document.getElementById('secretVideo');
-
-    // first click → prepare, but don't show or play yet
-    if (!firstClick) {
-      firstClick = true;
-      return;
-    }
-
-    // second click → show, fullscreen, and play
-    content.style.display = 'flex';
-    try {
-      if (content.requestFullscreen) {
-        await content.requestFullscreen();
-      } else if (content.webkitRequestFullscreen) {
-        content.webkitRequestFullscreen(); // Safari
+      if (isCorrect) {
+        content.style.display = 'flex';
+        content.requestFullscreen();
+      } else {
+        alert('Incorrect code!');
+        enteredDigits = [];
+        display.textContent = '';
       }
-
-      await video.play();
-      firstClick = false; // reset for next time
-    } catch (err) {
-      console.warn('Autoplay or fullscreen failed:', err);
-      firstClick = false;
-    }
-
-  } else {
-    alert('Incorrect code!');
-    enteredDigits = [];
-    display.textContent = '';
-    firstClick = false;
-  }
-});
+    });
+  
 
   </script>
 </body>
