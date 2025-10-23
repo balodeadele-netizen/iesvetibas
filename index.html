@@ -91,10 +91,11 @@
     <button class="btn">0</button>
     <button id="clearBtn" class="btn">Clear</button>
     <button id="submitBtn" class="btn">Submit</button>
+    
   </div>
 
   <div id="content">
-    <video src="1023.mov" playsinline autoplay loop> <video/>
+    <video src="1023.mov" playsinline autoplay muted loop> <video/>
     <!-- or you can use: <video src="secret.mp4" autoplay loop muted></video> -->
   </div>
 
@@ -136,16 +137,13 @@ submitBtn.addEventListener('click', async () => {
     content.style.display = 'flex';
 
     try {
-      // 1️⃣ Try fullscreen first (must be from a click event)
       if (content.requestFullscreen) {
         await content.requestFullscreen();
       } else if (content.webkitRequestFullscreen) {
-        content.webkitRequestFullscreen(); // Safari support
+        content.webkitRequestFullscreen();
       }
 
-      // 2️⃣ Try playing the video immediately
       await video.play();
-
     } catch (err) {
       console.warn("Autoplay or fullscreen failed:", err);
       alert("Tap the screen to start the video");
