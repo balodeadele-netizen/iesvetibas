@@ -127,7 +127,7 @@
       display.textContent = '';
     });
 
-let firstClick = false; // tracks if the button was pressed once
+let firstClick = false; // track if it's been pressed once
 
 submitBtn.addEventListener('click', async () => {
   const isCorrect =
@@ -137,19 +137,19 @@ submitBtn.addEventListener('click', async () => {
   if (isCorrect) {
     const video = document.getElementById('secretVideo');
 
-    // first click → show content only
+    // first click → prepare, but don't show or play yet
     if (!firstClick) {
-      content.style.display = 'flex';
       firstClick = true;
       return;
     }
 
-    // second click → go fullscreen + play video with sound
+    // second click → show, fullscreen, and play
+    content.style.display = 'flex';
     try {
       if (content.requestFullscreen) {
         await content.requestFullscreen();
       } else if (content.webkitRequestFullscreen) {
-        content.webkitRequestFullscreen(); // Safari support
+        content.webkitRequestFullscreen(); // Safari
       }
 
       await video.play();
@@ -166,6 +166,7 @@ submitBtn.addEventListener('click', async () => {
     firstClick = false;
   }
 });
+
   </script>
 </body>
 </html>
