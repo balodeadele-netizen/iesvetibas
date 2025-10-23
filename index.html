@@ -94,7 +94,7 @@
   </div>
 
   <div id="content">
-    <video src="1023.mov" controls autoplay loop> <video/>
+    <video src="1023.mov" playsinline autoplay loop> <video/>
     <!-- or you can use: <video src="secret.mp4" autoplay loop muted></video> -->
   </div>
 
@@ -132,10 +132,17 @@
         enteredDigits.length === correctDigits.length &&
         correctDigits.every(d => enteredDigits.includes(d));
 
-      if (isCorrect) {
-        content.style.display = 'flex';
-        content.requestFullscreen();
-      } else {
+    if (isCorrect) {
+  content.style.display = 'flex';
+  const video = document.getElementById('secretVideo');
+  content.requestFullscreen().then(() => {
+    // start the video once fullscreen is active
+    video.play().catch(() => {
+      // fallback in case autoplay is blocked
+      alert("Tap the screen to start the video");
+    });
+  });
+} else {
         alert('Incorrect code!');
         enteredDigits = [];
         display.textContent = '';
