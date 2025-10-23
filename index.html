@@ -126,37 +126,30 @@
       display.textContent = '';
     });
 
-submitBtn.addEventListener('click', () => {
+submitBtn.addEventListener('click', async () => {
   const isCorrect =
     enteredDigits.length === correctDigits.length &&
     correctDigits.every(d => enteredDigits.includes(d));
 
   if (isCorrect) {
-    content.style.display = 'flex';
     const video = document.getElementById('secretVideo');
+    content.style.display = 'flex';
 
-    // Go fullscreen first (directly after user click)
-    const fullscreenPromise = content.requestFullscreen();
+    try {
+      // 1️⃣ Try fullscreen first (must be from a click event)
+      if (content.requestFullscreen) {
+        await content.requestFullscreen();
+      } else if (content.webkitRequestFullscreen) {
+        content.webkitRequestFullscreen(); // Safari support
+      }
 
-    // Try to play video right after fullscreen is requested
-    fullscreenPromise
-      .then(() => {
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            alert("Tap the screen to start the video");
-          });
-        }
-      })
-      .catch(() => {
-        // Fallback if fullscreen fails
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            alert("Tap the screen to start the video");
-          });
-        }
-      });
+      // 2️⃣ Try playing the video immediately
+      await video.play();
+
+    } catch (err) {
+      console.warn("Autoplay or fullscreen failed:", err);
+      alert("Tap the screen to start the video");
+    }
   } else {
     alert('Incorrect code!');
     enteredDigits = [];
